@@ -1,0 +1,20 @@
+flowchart LR
+    Internet((Internet)) --> IGW[Internet Gateway]
+    subgraph VPC_A["VPC A — 10.10.0.0/16"]
+      PUB["Public subnet — 10.10.1.0/24"]
+      PRIV_A["Private subnet — 10.10.2.0/24"]
+      BASTION["Bastion host — 10.10.1.10"]
+      APP_A["App-A — 10.10.2.10"]
+      PUB --> BASTION
+      PRIV_A --> APP_A
+    end
+    subgraph VPC_B["VPC B — 10.20.0.0/16"]
+      PRIV_B["Private subnet — 10.20.1.0/24"]
+      APP_B["App-B — 10.20.1.10"]
+      PRIV_B --> APP_B
+    end
+    IGW --> PUB
+    VPC_A <-->|"VPC peering"| VPC_B
+    BASTION -. "SSH administration" .-> APP_A
+    BASTION -. "SSH administration" .-> APP_B
+    APP_A <-->|"Private traffic"| APP_B
